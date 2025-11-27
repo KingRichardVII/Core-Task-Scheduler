@@ -1,0 +1,302 @@
+# ============================================
+# EDGE CASES TEST FILE FOR TASK SCHEDULER
+# ============================================
+
+# Test 1: Empty lines and comments
+# This is a comment
+
+
+  # Comment with leading spaces
+# Another comment
+
+# Test 2: Case insensitivity of commands
+add_task T1 1 5
+Add_Task T2 2 3
+ADD_TASK T3 3 2
+TiCk
+tIcK
+status
+
+# Test 3: Extra whitespace
+  ADD_TASK   T4   5   3
+     TICK
+  STATUS
+
+# Test 4: Negative priority (should work - priorities can be negative)
+ADD_TASK NegPri -5 3
+ADD_TASK NegPri2 -10 2
+PRINT_READY
+TICK
+TICK
+
+# Test 5: Zero priority (should work)
+ADD_TASK ZeroPri 0 4
+PRINT_READY
+TICK
+
+# Test 6: Very large priority values
+ADD_TASK BigPri 999999 2
+ADD_TASK BigPri2 1000000 2
+PRINT_READY
+
+# Test 7: Duplicate task IDs
+ADD_TASK DupTest 1 3
+ADD_TASK DupTest 2 5
+PRINT_READY
+
+# Test 8: Try to add task with ID of currently running task
+TICK
+ADD_TASK T1 5 5
+STATUS
+
+# Test 9: Block when nothing is running
+TICK
+TICK
+TICK
+STATUS
+BLOCK
+
+# Test 10: Unblock when nothing is blocked
+UNBLOCK
+
+# Test 11: Multiple unblocks with empty queue
+UNBLOCK
+UNBLOCK
+
+# Test 12: Add task, block it, try to add same ID while blocked
+ADD_TASK BlockTest 1 5
+TICK
+BLOCK
+ADD_TASK BlockTest 2 3
+PRINT_BLOCKED
+
+# Test 13: Unblock and verify it goes to ready queue
+UNBLOCK
+PRINT_READY
+PRINT_BLOCKED
+
+# Test 14: Task with burst_time = 1 (finishes in one tick)
+ADD_TASK Quick 0 1
+TICK
+STATUS
+
+# Test 15: Many tasks with same priority (test tie-breaking)
+ADD_TASK Same1 10 2
+ADD_TASK Same2 10 2
+ADD_TASK Same3 10 2
+ADD_TASK Same4 10 2
+ADD_TASK Same5 10 2
+PRINT_READY
+TICK
+TICK
+TICK
+TICK
+TICK
+
+# Test 16: Block and unblock same task multiple times
+ADD_TASK MultiBlock 1 10
+TICK
+BLOCK
+UNBLOCK
+TICK
+BLOCK
+UNBLOCK
+PRINT_READY
+
+# Test 17: Queue multiple blocked tasks and unblock all
+ADD_TASK B1 5 5
+ADD_TASK B2 3 5
+ADD_TASK B3 7 5
+TICK
+BLOCK
+TICK
+BLOCK
+TICK
+BLOCK
+PRINT_BLOCKED
+UNBLOCK
+UNBLOCK
+UNBLOCK
+PRINT_READY
+PRINT_BLOCKED
+
+# Test 18: Status checks at various states
+STATUS
+TICK
+STATUS
+BLOCK
+STATUS
+
+# Test 19: Print empty queues
+PRINT_READY
+PRINT_BLOCKED
+
+# Test 20: Invalid command
+INVALID_COMMAND
+
+# Test 21: Commands with wrong number of arguments
+ADD_TASK OnlyOne
+ADD_TASK Two 2
+ADD_TASK Too Many Args Here
+
+# Test 22: Invalid integer arguments
+ADD_TASK BadPri abc 5
+ADD_TASK BadBurst 5 xyz
+ADD_TASK BothBad abc def
+
+# Test 23: Zero burst time (should error)
+ADD_TASK ZeroBurst 5 0
+
+# Test 24: Negative burst time (should error)
+ADD_TASK NegBurst 5 -3
+
+# Test 25: Very large burst time
+ADD_TASK HugeBurst 5 999999
+PRINT_READY
+
+# Test 26: Task IDs with special characters
+ADD_TASK Task-123 1 2
+ADD_TASK Task_456 2 2
+ADD_TASK Task.789 3 2
+ADD_TASK Task@ABC 4 2
+PRINT_READY
+
+# Test 27: Quoted task ID (though spec says no spaces in ID)
+ADD_TASK "QuotedTask" 5 2
+PRINT_READY
+
+# Test 28: Multiple consecutive ticks with nothing to run
+TICK
+TICK
+TICK
+TICK
+TICK
+
+# Test 29: Mix of ready and blocked tasks
+ADD_TASK R1 1 3
+ADD_TASK R2 2 3
+TICK
+BLOCK
+TICK
+BLOCK
+PRINT_READY
+PRINT_BLOCKED
+STATUS
+
+# Test 30: Unblock into higher priority position
+ADD_TASK Low 10 5
+TICK
+BLOCK
+ADD_TASK High 1 5
+UNBLOCK
+PRINT_READY
+TICK
+STATUS
+
+# Test 31: Complete all tasks and verify empty state
+TICK
+TICK
+TICK
+TICK
+TICK
+TICK
+TICK
+TICK
+TICK
+TICK
+TICK
+TICK
+STATUS
+PRINT_READY
+PRINT_BLOCKED
+
+# Test 32: Single task from start to finish
+ADD_TASK Solo 5 3
+PRINT_READY
+TICK
+STATUS
+TICK
+STATUS
+TICK
+STATUS
+PRINT_READY
+
+# Test 33: Rapid add and execute
+ADD_TASK F1 1 1
+TICK
+ADD_TASK F2 1 1
+TICK
+ADD_TASK F3 1 1
+TICK
+
+# Test 34: Block on first tick of a new task
+ADD_TASK BlockFirst 1 5
+TICK
+BLOCK
+PRINT_BLOCKED
+
+# Test 35: Commands after inline comments
+ADD_TASK T100 1 2 # This is an inline comment
+PRINT_READY # Check the queue
+
+# Test 36: Very long task ID
+ADD_TASK ThisIsAVeryLongTaskIdentifierToTestIfTheSystemCanHandleIt 1 2
+PRINT_READY
+
+# Test 37: Numeric task IDs
+ADD_TASK 12345 1 2
+ADD_TASK 67890 2 2
+PRINT_READY
+
+# Test 38: Interleaved operations
+ADD_TASK I1 3 5
+TICK
+ADD_TASK I2 1 3
+PRINT_READY
+TICK
+BLOCK
+ADD_TASK I3 2 4
+UNBLOCK
+PRINT_READY
+PRINT_BLOCKED
+
+# Test 39: Task finishes exactly when blocked (shouldn't happen, but test defensive code)
+ADD_TASK WillFinish 1 1
+TICK
+
+# Test 40: Stress test - many tasks
+ADD_TASK S1 1 1
+ADD_TASK S2 2 1
+ADD_TASK S3 3 1
+ADD_TASK S4 4 1
+ADD_TASK S5 5 1
+ADD_TASK S6 6 1
+ADD_TASK S7 7 1
+ADD_TASK S8 8 1
+ADD_TASK S9 9 1
+ADD_TASK S10 10 1
+PRINT_READY
+TICK
+TICK
+TICK
+TICK
+TICK
+TICK
+TICK
+TICK
+TICK
+TICK
+
+# Final status
+STATUS
+PRINT_READY
+PRINT_BLOCKED
+
+# Test QUIT command
+QUIT
+
+# Everything after QUIT should be ignored
+ADD_TASK AfterQuit 1 5
+TICK
+PRINT_READY
+STATUS
