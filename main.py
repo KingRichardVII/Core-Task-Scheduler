@@ -326,7 +326,8 @@ class Scheduler:
             tasks = self.ready.get_all_sorted()
             for task in tasks:
                 print(
-                    f"-> {task.id} | priority={task.priority} | remaining={task.remaining}")
+                    f"-> {task.id} | priority={task.priority} | remaining="
+                    f" {task.remaining}")
 
     def print_blocked(self):
         print("BLOCKED_QUEUE")
@@ -343,7 +344,8 @@ class Scheduler:
             print("IDLE")
         else:
             print(
-                f"-> {self.running.id} | priority={self.running.priority} | remaining={self.running.remaining}"
+                f"-> {self.running.id} | priority={self.running.priority} |  "
+                f"remaining={self.running.remaining}"
             )
 
 

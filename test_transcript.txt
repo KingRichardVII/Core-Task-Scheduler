@@ -1,0 +1,15 @@
+(.venv) PS C:\Users\King Richard III\PycharmProjects\Core Task Scheduler> python main.py commands.txt
+RUNNING T1
+RUNNING T1
+BLOCKED T1
+UNBLOCKED T1
+RUNNING T3
+RUNNING T3
+READY_QUEUE
+-> T1 | priority=1 | remaining= 1
+-> T2 | priority=2 | remaining= 5
+BLOCKED_QUEUE
+EMPTY
+STATUS
+IDLE
+(.venv) PS C:\Users\King Richard III\PycharmProjects\Core Task Scheduler> 
